@@ -1,6 +1,4 @@
-Here's a README file for a MERN stack chat application project on GitHub:
 
----
 
 # MERN Chat Application
 
@@ -32,8 +30,8 @@ A real-time chat application built with the MERN stack (MongoDB, Express, React,
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/mern-chat-app.git
-   cd mern-chat-app
+   git clone https://github.com/yourusername/ChatApp.git
+   cd ChatApp
    ```
 
 2. Navigate to the server directory:
@@ -98,7 +96,7 @@ A real-time chat application built with the MERN stack (MongoDB, Express, React,
 2. Register a new account or log in with an existing account.
 3. Start chatting in real-time!
 
-## Project Structure
+## Overall Project Structure
 
 ```
 mern-chat-app/
@@ -138,16 +136,10 @@ mern-chat-app/
 4. Push to the branch (`git push origin feature/feature-name`).
 5. Open a pull request.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
 - [Socket.IO](https://socket.io/)
 - [MERN Stack](https://www.mongodb.com/mern-stack)
 - [JWT](https://jwt.io/)
 
----
 
-Feel free to customize this README as needed for your specific project.
