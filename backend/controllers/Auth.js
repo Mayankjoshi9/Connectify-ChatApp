@@ -3,6 +3,7 @@ const otpGenerator=require("otp-generator");
 const Otp=require("../models/otp")
 const bcrypt=require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mailSender = require("../utils/mailsender");
 require("dotenv").config();
 
 exports.login=async(req,res)=>{
@@ -158,6 +159,65 @@ exports.signup=async (req,res)=>{
         res.status(500).json({
             success:false,
             message:"User can't registered.",
+        })
+    }
+}
+
+exports.changePassword= async(req,res)=>{
+    try {
+        const {oldPassword,password}=req.body;
+        const id=req.user.id;
+        if(!password && !oldPassword){
+            res.status(400).json({
+                success:false,
+                message:"all fields are required "
+            })
+        }
+        const userDetail=await User.findById(id);
+        if(!userDetail){
+            res.status(400).json({
+                success:false,
+                message:"user detail is not found",
+            })
+        }
+        const Ismatch=await bcrypt.compare(oldPassword,userDetail.password);
+        if(!Ismatch){
+            res.status(400).json({
+                success:false,
+                message:"The Password is incorrect",
+            })
+        }
+
+        const hashPassword=await bcrypt.hash(password,10);
+        const updatedUserDetail=await User.findByIdAndUpdate(id,
+            {password:hashPassword},
+             {new:true}
+        )
+
+        try {
+            await mailSender(userDetail.email,
+                "password has been updated",
+                `password updated successfully for ${updatedUserDetail.name}`
+
+            )
+
+        } catch (error) {
+            res.status(500).json({
+                success:false,
+                message:"error while senting email",
+            })
+        }
+        
+        res.status(200).json({
+            success:true,
+            message:"Password Updated successfully",
+        })
+
+
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:"Error while updating Password",
         })
     }
 }

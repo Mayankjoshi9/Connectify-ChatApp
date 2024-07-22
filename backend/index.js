@@ -4,7 +4,8 @@ const cors=require("cors")
 require("dotenv").config();
 const dbConnect=require("./config/database.js")
 const userRoutes=require("./routes/auth.js")
-const cookieParser=require("cookie-parser")
+const cookieParser=require("cookie-parser");
+const searchRoute=require("./routes/search.js")
 
 dbConnect();
 
@@ -15,7 +16,7 @@ app.use(cookieParser());
 
 app.use(
 	cors({
-		origin:"http://localhost:3000",
+		origin:"http://localhost:5173",
 		credentials:true,
 	})
 )
@@ -23,7 +24,8 @@ app.use(
 const port=process.env.PORT|| 2000;
 
 //routes
-app.use("/api/v1/auth",userRoutes)
+app.use("/api/v1/auth",userRoutes);
+app.use("/api/v1/search",searchRoute);
 
 
 //def route

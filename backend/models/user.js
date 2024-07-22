@@ -6,7 +6,7 @@ const UserSchema= new mongoose.Schema({
         require:true,
         trim:true,
     },
-    Name:{
+    name:{
         type:String,
         require:true,
         trim:true,
@@ -15,7 +15,14 @@ const UserSchema= new mongoose.Schema({
         type:String,
         require:true,
         trim:true,
+    },
+    token:{
+        type:String,
+        trim:true,
+    },
+    resetPasswordExpires:{
+        type:Date,
     }
-});
+},{timestamps:true});
 
 module.exports= mongoose.model("User",UserSchema);
