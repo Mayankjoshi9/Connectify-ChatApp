@@ -10,14 +10,14 @@ exports.login=async(req,res)=>{
     try{
        const { email,password}=req.body;
        if(!email || !password){
-          res.status(403).json({
+         return  res.status(403).json({
                success:false,
                message:"All Field are Required",
           })
        }
        const user=await User.findOne({email:email});
        if(!user){
-        res.status(401).json({
+        return res.status(401).json({
             success:false,
             message:"user not registered"
         })
@@ -29,7 +29,7 @@ exports.login=async(req,res)=>{
             id:user._id,
            }
            const token=jwt.sign(payload,process.env.JWT_SECRET,{
-            expiresIn:"2h",
+            expiresIn:"5h",
            });
            user.token=token;
            user.password=undefined;
@@ -64,14 +64,14 @@ exports.otp= async(req,res)=>{
     try{
         const{email}=req.body;
         if(!email){
-            res.status(401).json({
+           return res.status(401).json({
                 success:false,
                 message:"Please Provide Email",
             })
         }
         const user=await User.findOne({email});
         if(user){
-            res.status(401).json({
+           return res.status(401).json({
                 success:false,
                 message:"Already Register",
             })
@@ -93,7 +93,7 @@ exports.otp= async(req,res)=>{
 
         const otpBody=await Otp.create({email:email,otp:otp});
 
-        res.status(200).json({
+        return res.status(200).json({
             success:true,
             message:"otp Created Successfully",
         })
@@ -101,7 +101,7 @@ exports.otp= async(req,res)=>{
 
 
     }catch(error){
-        res.status(500).json({
+       return res.status(500).json({
             success:false,
             message:"Error in Creating Otp",
         })
@@ -150,13 +150,13 @@ exports.signup=async (req,res)=>{
         const user=await User.create({email:email,name:name,
             password:hashedPassword});
         
-        res.status(200).json({
+       return res.status(200).json({
             success:true,
             message:"User Registered Successfully",
         })
 
     }catch(error){
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"User can't registered.",
         })
@@ -168,21 +168,21 @@ exports.changePassword= async(req,res)=>{
         const {oldPassword,password}=req.body;
         const id=req.user.id;
         if(!password && !oldPassword){
-            res.status(400).json({
+            return res.status(400).json({
                 success:false,
                 message:"all fields are required "
             })
         }
         const userDetail=await User.findById(id);
         if(!userDetail){
-            res.status(400).json({
+           return  res.status(400).json({
                 success:false,
                 message:"user detail is not found",
             })
         }
         const Ismatch=await bcrypt.compare(oldPassword,userDetail.password);
         if(!Ismatch){
-            res.status(400).json({
+          return  res.status(400).json({
                 success:false,
                 message:"The Password is incorrect",
             })
@@ -202,20 +202,20 @@ exports.changePassword= async(req,res)=>{
             )
 
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success:false,
                 message:"error while senting email",
             })
         }
         
-        res.status(200).json({
+        return res.status(200).json({
             success:true,
             message:"Password Updated successfully",
         })
 
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"Error while updating Password",
         })

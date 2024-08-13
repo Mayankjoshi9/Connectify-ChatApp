@@ -1,16 +1,17 @@
+
 const Chat=require("../models/chat");
 
-exports.CreateChat=async(req,res)=>{
+exports.createChat=async(req,res)=>{
     try {
         const {curruser,user}=req.body;
         if(!curruser || !user){
-            res.status(400).json({
+           return res.status(400).json({
                 success:false,
                 message:"missing parameters"
             })
         }
         
-        const chat=await Chat.findOne({
+        let chat=await Chat.findOne({
             participants:{$all:[curruser,user]},
         });
 
@@ -18,14 +19,37 @@ exports.CreateChat=async(req,res)=>{
             chat=await Chat.create({participants:[curruser,user]});
         }
 
-        res.status(200).json({
+       return res.status(200).json({
             success:true,
+            data:chat,
             message:"chat session created",
         })
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"session can't created",
+        })
+    }
+}
+
+exports.fetchChat=async(req,res)=>{
+    try {
+        const userid=req.user.id;
+        
+        const chat = await Chat.find({
+            participants:userid,
+        }).populate("participants","email name");
+
+        return res.status(200).json({
+            success:true,
+            data:chat,
+            message:"all chat fetched",
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:"error in fetching chat",
         })
     }
 }

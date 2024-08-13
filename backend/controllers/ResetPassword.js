@@ -7,7 +7,7 @@ exports.resetPasswordToken=async(req,res)=>{
     try {
         const {email}=req.body;
         if(!email){
-            res.status(403).json({
+           return res.status(403).json({
                 success:false,
                 message:"All Field are Required",
             });
@@ -15,7 +15,7 @@ exports.resetPasswordToken=async(req,res)=>{
 
         const user=await User.findOne({email});
         if(!user){
-            res.status(403).json({
+           return res.status(403).json({
                 success:false,
                 message:"User is not registered"
             })
@@ -29,17 +29,17 @@ exports.resetPasswordToken=async(req,res)=>{
             resetPasswordExpires:Date.now()+5*60*1000,
         },{new:true})
         
-        const url=`http://localhost:3000/update-password/${token}`
+        const url=`http://localhost:5173/update-password/${token}`
         await mailSender(email,"Reset Password Link",
             `<h4>Here your reset Password Link <br><h1>${url}</h1> </h4>`);
 
-        res.status(200).json({
+        return res.status(200).json({
             success:true,
             message:"Email Sent Successfully.Please check Email"
         })       
         
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"Something went wrong, while sending reset mail."
         })
@@ -50,14 +50,14 @@ exports.resetPassword=async(req,res)=>{
     try {
         const {password,confirmPassword,token}=req.body;
         if(!password || !confirmPassword || !token){
-            res.status(400).json({
+           return  res.status(400).json({
                  success:false,
                  message:"All Parameter required"
             })
         }
 
         if(password!=confirmPassword){
-            res.status(400).json({
+           return res.status(400).json({
                 success:false,
                 message:"Password and Confirm Password are different",
             })
@@ -65,13 +65,13 @@ exports.resetPassword=async(req,res)=>{
 
         const user=await User.findOne({token:token});
         if(!user){
-            res.status(400).json({
+           return res.status(400).json({
                 status:false,
                 message:"token is invalid."
             })
         }
         if(user.resetPasswordExpires<Date.now()){
-            res.status(400).json({
+           return res.status(400).json({
                 success:false,
                 message:"token expired"
             })
@@ -85,13 +85,13 @@ exports.resetPassword=async(req,res)=>{
         },{new:true})
         
 
-        res.status(200).json({
+        return res.status(200).json({
             success:true,
             message:"password successfully reseted"
         })
         
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"something went while resetting password",
         })
