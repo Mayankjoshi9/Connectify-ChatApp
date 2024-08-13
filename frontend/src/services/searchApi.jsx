@@ -1,8 +1,11 @@
 import axios from "axios";
 import { setLoading } from "../slices/auth";
+import toast from "react-hot-toast";
+import {  setSessionUser } from "../slices/chat";
+
 
 const SEARCH_API="http://localhost:4000/api/v1/search/searchUser";
-export function searchUser(search,setUser){
+export function searchUser(token,search){
     return async(dispatch)=>{
           dispatch(setLoading(true));
           try {
@@ -11,19 +14,22 @@ export function searchUser(search,setUser){
                 url:SEARCH_API,
                 data:{
                     email:search
-                }
+                },
+                headers:{
+                    Authorization: `Bearer ${token}`,
+                  }
             });
 
             if(!response.data.success){
                 throw new Error(response.data.message);
             }
 
-            console.log(response);
-            setUser(response.data.data);
-
+            dispatch(setSessionUser(response.data.data));
+            localStorage.setItem("sessionUser",JSON.stringify(response.data.data));
 
           } catch (error) {
                console.log("Error in SearchUser API");
+               toast.error("not found");
                
           }
           dispatch(setLoading(false));
