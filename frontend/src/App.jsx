@@ -13,7 +13,7 @@ import PrivateRoute from './components/auth/PrivateRoute';
 
 function App() {
   return (
-    <div className="w-screen h-screen min-h-screen">
+    <div className="w-screen h-screen min-h-screen overflow-hidden">
       <Routes>
 
         <Route path='/'

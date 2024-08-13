@@ -5,14 +5,11 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
 import {Provider} from "react-redux";
-import authSlice from './slices/auth';
 import { Toaster } from 'react-hot-toast';
+import rootReducer from './reducer';
 
 const store=configureStore({
-   reducer: {
-    auth:authSlice,
-    
-  },
+   reducer:rootReducer,
 });
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,8 +18,6 @@ root.render(
          <App />
          <Toaster/>
       </BrowserRouter>
-   </Provider>
-   
-  
+   </Provider> 
 );
 
