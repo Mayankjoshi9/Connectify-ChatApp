@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { CgProfile } from "react-icons/cg";
 import { FaSearch } from "react-icons/fa";
-import { logout } from "../services/authAPI";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { searchUser } from "../services/searchApi";
 import ChatSession from "../components/chat/ChatSession";
 import Profile from "../components/chat/Profile";
@@ -12,6 +9,7 @@ import { CreateSession, fetchChat } from "../services/chatAPI";
 import NoSession from "../components/chat/NoSession";
 import { setSession, setSessionUser } from "../slices/chat";
 import { setChatUsers } from "../slices/chat";
+import NavBar from "../components/common/NavBar";
 
 
 
@@ -19,7 +17,7 @@ const Home = () => {
   const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
   const loading = useSelector((state) => state.auth.loading);
   const curruser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
@@ -54,20 +52,8 @@ const Home = () => {
 
 
   return (
-    <div className="w-screen h-screen flex flex-col  text-black ">
-      <nav className="bg-slate-800 w-full h-[8%] flex justify-between items-center">
-        <button>
-          <CgProfile className="text-[50px] text-yellow-200"></CgProfile>
-        </button>
-        <button
-          className="w-[100px] h-[50px] bg-red-500"
-          onClick={() => {
-            dispatch(logout(navigate));
-          }}
-        >
-          Logout
-        </button>
-      </nav>
+    <div className="w-screen h-screen flex flex-col text-black ">
+      <NavBar/>
 
       {loading ? (
         <div className="loader">Loading</div>
@@ -95,7 +81,7 @@ const Home = () => {
               
             </div>
 
-            <div className="h-full w-full  bg-green-100">
+            <div className="h-full w-full  bg-[#111b21]">
               <div className=" w-full overflow-y-auto">
                 {sessionUser == null ? (
                   <></>
@@ -118,8 +104,6 @@ const Home = () => {
                     {participantName}
                   </button>
                   )
-
-
                 }
                 )}
               </div>

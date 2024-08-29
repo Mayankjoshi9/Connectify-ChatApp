@@ -14,7 +14,10 @@ const messageRoute=require("./routes/message.js")
 
 
 const {createServer}=require("http");
-const {Server}= require("socket.io")
+const {Server}= require("socket.io");
+const { cloudinaryConnect } = require("./config/cloudinary.js");
+const fileUpload = require("express-fileupload");
+
 
 
 
@@ -25,15 +28,9 @@ const io=new Server(server,{
 		origin:"*",
 		methods:["GET","POST"],
 		credentials:true,
-	}
+	},
+	connectionStateRecovery: {}
 });
-
-dbConnect();
-
-
-app.use(express.json());
-app.use(cookieParser());
-
 
 app.use(
 	cors({
@@ -41,6 +38,20 @@ app.use(
 		credentials:true,
 	})
 )
+
+dbConnect();
+
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+	fileUpload({
+		useTempFiles:true,
+		tempFileDir:"/tmp",
+	})
+)
+
+cloudinaryConnect();
 
 
 io.on("connection",(socket)=>{
@@ -77,7 +88,7 @@ const port=process.env.PORT|| 2000;
 app.use("/api/v1/auth",userRoutes);
 app.use("/api/v1/search",searchRoute);
 app.use("/api/v1/chat",chatRoute);
-app.use("/api/v1/message",messageRoute)
+app.use("/api/v1/message",messageRoute);
 
 
 //def route

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { sendOtp, signup } from "../services/authAPI"
+import { sendOtp} from "../services/authAPI"
 import { Link, useNavigate } from 'react-router-dom';
 import { setSignupData } from '../slices/auth';
 

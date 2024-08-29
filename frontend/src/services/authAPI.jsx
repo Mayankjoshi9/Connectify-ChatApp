@@ -43,7 +43,8 @@ export function login(email,password,navigate){
 
 
         } catch (error) {
-            console.log("Error in Login")
+            console.log(error);
+            toast.error(error.response.data.message);
         }
         dispatch(setLoading(false));
         
@@ -78,7 +79,7 @@ export function signup(name,email,password,otp,navigate){
 
         } catch (error) {
             console.log("signup api error.")
-            toast.error("Signup Failed");
+            toast.error(error.response.data.message);
         }
         toast.dismiss(toastId);
         dispatch(setLoading(false));
@@ -108,7 +109,7 @@ export function sendOtp(email,navigate){
 
         } catch (error) {
             console.log("Error in Sending Otp");
-            toast.error("Could not sent otp");
+            toast.error(error.response.data.message);
         }
         dispatch(setLoading(false));
         toast.dismiss(toastId);
@@ -143,7 +144,7 @@ export function resetPasswordToken(email,setEmailSent){
             setEmailSent(true);
         } catch (error) {
             console.log("Error in resetPasswordToken api");
-            toast.error("Failed to send email for resetting password");
+            toast.error(error.response.data.message);
         }
         dispatch(setLoading(false));
     }

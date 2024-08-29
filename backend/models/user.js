@@ -17,6 +17,10 @@ const UserSchema= new mongoose.Schema({
         require:true,
         trim:true,
     },
+    additionalDetails:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Profile",
+    },
     token:{
         type:String,
         trim:true,

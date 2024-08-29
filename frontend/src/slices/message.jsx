@@ -1,21 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState={
-     messages:[],
+const initialState = {
+  messages: [],
 };
 
-const chatSlice=createSlice({
-    name:"message",
-    initialState:initialState,
-    reducers:{
-        setMessage(state,value){
-            state.messages=value.payload;
-        },
-        addMessage(state,value){
-            state.messages=[...state.messages,value.payload];
-        },
+const messageSlice = createSlice({
+  name: "message",
+  initialState: initialState,
+  reducers: {
+    setMessage(state, action) {
+      state.messages = action.payload;
+    },
+    addMessage(state, action) {
+      const messageExists = state.messages.some(
+        (message) => message._id === action.payload._id
+      );
+      if (!messageExists) {
+        state.messages = [...state.messages, action.payload];
+      }
     }
+  },
 });
 
-export const {setMessage,addMessage} = chatSlice.actions;
-export default chatSlice.reducer;
+export const { setMessage, addMessage } = messageSlice.actions;
+export default messageSlice.reducer;

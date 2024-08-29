@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from "../services/authAPI"
 import { Link, useNavigate } from 'react-router-dom';
@@ -77,8 +77,6 @@ const Login = () => {
         </div >
         )
       }
-
-
     </div >
   )
 }

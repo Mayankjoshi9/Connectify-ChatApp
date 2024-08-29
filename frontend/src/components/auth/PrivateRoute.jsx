@@ -1,8 +1,8 @@
-import React from 'react'
+
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
 const PrivateRoute = ({children}) => {
  
   const token=useSelector((state)=>state.auth.token);
@@ -13,5 +13,9 @@ const PrivateRoute = ({children}) => {
      return children;
   }
 }
+
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired, // Add 'children' to prop types
+};
 
 export default PrivateRoute
