@@ -121,6 +121,10 @@ export function logout(navigate){
     return (dispatch)=>{
         dispatch(setToken(null));
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("session");
+        localStorage.removeItem("sessionUser");
+
         toast.success("Logout Successfully");
         navigate("/login");
     }

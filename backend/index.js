@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-mixed-spaces-and-tabs */
+
 
 const express=require("express");
 const cors=require("cors")
@@ -56,6 +55,13 @@ cloudinaryConnect();
 
 io.on("connection",(socket)=>{
 	console.log("User Connected");
+
+	socket.on('CreateSession',(sessionId,user1Id,user2Id)=>{
+		socket.join(sessionId);
+		io.to(user1Id).emit('sessionCreated',sessionId);
+		io.to(user2Id).emit('sessionCreated',sessionId);
+	});
+	
 	socket.on('join',(chatSessionId)=>{
 		console.log(`User joined chat session: ${chatSessionId}`);
 		socket.join(chatSessionId);
