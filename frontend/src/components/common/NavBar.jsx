@@ -1,8 +1,10 @@
 
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../services/authAPI";
-import { CgProfile } from "react-icons/cg";
+import { IoIosNotifications } from "react-icons/io";
 import { useDispatch } from "react-redux";
+import { MdOutlineGroupAdd } from "react-icons/md";
+import { CiLogout } from "react-icons/ci";
 
 
 
@@ -11,23 +13,27 @@ const NavBar = () => {
     const dispatch = useDispatch();
   return (
     <>
-        <nav className="bg-slate-800 w-full h-[8%] flex justify-around items-center">
-        <button>
-          <CgProfile className="text-[50px] text-yellow-200"></CgProfile>
+        <nav className="bg-gray-900 w-full h-[8%] flex justify-around items-center">
+        <button className="text-white text-2xl">
+        <MdOutlineGroupAdd />
+        </button>
+        <button className="relative text-white text-3xl">
+        <div className=" absolute text-sm text-white w-5 h-5 rounded-full bg-red-500 right-0 -top-1 ">1</div>
+        <IoIosNotifications />
         </button>
         <button
-          className="w-[100px] h-[50px] bg-red-500"
+          className="text-2xl text-white"
           onClick={() => {
             dispatch(logout(navigate));
           }}
         >
-          Logout
+          <CiLogout />
         </button>
       </nav>
     </>
   )
 }
 
-export default NavBar
+export default NavBar;
 
 

@@ -8,6 +8,7 @@ const ProfileSchema= new mongoose.Schema({
     about:{
         type:String,
         trim:true,
+        default: 'Hey there! I am using this app.'
     }
 
 });
