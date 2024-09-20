@@ -1,4 +1,5 @@
-const User=require("../models/user")
+const User=require("../models/user");
+const Profile=require("../models/profile")
 const otpGenerator=require("otp-generator");
 const Otp=require("../models/otp")
 const bcrypt=require("bcrypt");
@@ -15,7 +16,7 @@ exports.login=async(req,res)=>{
                message:"All Field are Required",
           })
        }
-       const user=await User.findOne({email:email});
+       const user=await User.findOne({email:email}).populate("additionalDetails");
        if(!user){
         return res.status(401).json({
             success:false,
@@ -42,7 +43,7 @@ exports.login=async(req,res)=>{
             success:true,
             token,
             user,
-            message:"Login Successfull. "
+            message:"Login Successfull."
            });
        }
        else{
@@ -133,22 +134,27 @@ exports.signup=async (req,res)=>{
             })
         }
         const otpBody=await Otp.findOne({email}).sort({createdAt:-1}).limit(1);
-        console.log(otpBody);
-        if(otpBody.length==0){
-            res.status(400).json({
+        console.log("otp : ",otpBody);
+        if(!otpBody){
+            return res.status(400).json({
                 success:false,
                 message:"otp not found"
             })
         }
         if(otpBody.otp!=otp){
-           res.status(400).json({
+           return res.status(400).json({
             status:false,
             message:"Otp not Matching"
            })
         }
+        const profile = await Profile.create({
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,  // Add image here
+        });
+
         const hashedPassword= await bcrypt.hash(password,10);
         const user=await User.create({email:email,name:name,
-            password:hashedPassword});
+            password:hashedPassword,additionalDetails:profile._id});
+        
         
        return res.status(200).json({
             success:true,

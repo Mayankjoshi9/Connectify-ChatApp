@@ -1,32 +1,29 @@
 const User = require("../models/user");
 
-exports.searchUser=async(req,res)=>{
+exports.searchUser = async (req, res) => {
     try {
-        const {email}=req.body;
-        if(!email){
+        const searchTerm = req.query.q ? req.query.q.trim() : '';  // Trim and check query
+
+        if (!searchTerm) {
             return res.status(422).json({
-                success:false,
-                message:"email parameter missing"
-            })
-        }
-        const user=await User.findOne({email});
-        if(!user){
-            return res.status(404).json({
-                success:false,
-                message:"user not found",
-            })
+                success: false,
+                message: "Search term (email) parameter is missing"
+            });
         }
 
+        // Perform a case-insensitive search using regex
+        const users= await User.find({ name: { $regex: searchTerm, $options: 'i' } }, {name:1,email:1}).populate("additionalDetails");
         return res.status(200).json({
-            success:true,
-            data:user,
-            message:"user found"
-        })
+            success: true,
+            data: users,
+            message: "Users found"
+        });
 
     } catch (error) {
+        console.error("Error searching for users:", error);  // Log the error for debugging
         return res.status(500).json({
-            success:false,
-            message:"something went wrong , while searching user ",
-        })
+            success: false,
+            message: "An error occurred while searching for users",
+        });
     }
-}
+};

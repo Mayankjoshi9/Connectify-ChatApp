@@ -1,28 +1,56 @@
-import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { useEffect, useState, useCallback, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { searchUser } from "../services/searchApi";
+import { fetchResults } from "../services/searchApi";
 import ChatSession from "../components/chat/ChatSession";
-import Profile from "../components/chat/Profile";
+import Profile from "./Profile";
 import { CreateSession, fetchChat } from "../services/chatAPI";
 import NoSession from "../components/chat/NoSession";
 import { setSession, setSessionUser } from "../slices/chat";
 import { setChatUsers } from "../slices/chat";
 import NavBar from "../components/common/NavBar";
-
+import debounce from 'lodash.debounce';
+import SearchResults from '../components/common/SearchResults'
+import SearchBar from "../components/common/SearchBar";
 
 
 const Home = () => {
-  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
+  const [loadingSearch, setLoadingSearch] = useState(false);
 
   const dispatch = useDispatch();
-  
+
   const loading = useSelector((state) => state.auth.loading);
   const curruser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   const chatUsers = useSelector((state) => state.chat.chatUsers);
-  const sessionUser = useSelector((state) => state.chat.sessionUser);
+  const session = useSelector((state) => state.chat.session);
+
+
+  // Memoize the debounced function
+  const debouncedFetchResults = useMemo(() =>
+    debounce((query) => {
+      dispatch(fetchResults(query, token, setError, setResults, setLoadingSearch));
+    }, 300),
+    [dispatch, token, setError, setResults, setLoadingSearch]
+  );
+
+  const handleInputChange = useCallback(
+    (e) => {
+      setQuery(e.target.value);
+      debouncedFetchResults(e.target.value);
+    },
+    [debouncedFetchResults] // Use the memoized debounced function
+  );
+
+  // Optional: Cancel the debounced function on component unmount
+  useEffect(() => {
+    return () => {
+      debouncedFetchResults.cancel(); // Cancel any pending debounced calls
+    };
+  }, [debouncedFetchResults]);
 
 
   useEffect(() => {
@@ -37,79 +65,64 @@ const Home = () => {
   }
 
 
-  const sessionHandler = (e) => {
-    e.preventDefault();
-    setSearch("");
-    dispatch(CreateSession(token, curruser, sessionUser, setSession));
-  };
+  const handleSession = (user) => {
+    setQuery("");
+    setResults([]);
+    dispatch(CreateSession(token, curruser, user, setSession));
+    handleChat(session, user);
+  }
 
-  const session = useSelector((state) => state.chat.session);
-
-  const searchHandler = (e) => {
-    e.preventDefault();
-    dispatch(searchUser(token, search));
-  };
 
 
   return (
     <div className="w-screen h-screen flex flex-col text-black ">
-      <NavBar/>
+      <NavBar />
 
       {loading ? (
-        <div className="loader">Loading</div>
+        <div className="loader"></div>
       ) : (
         <div className="w-full h-full flex ">
           <div className="w-[35%] h-full  text-black flex flex-col justify-start items-center">
-            <div className="w-full h-[8%] flex flex-col bg-black">
-             
-                <form
-                  onSubmit={searchHandler}
-                  className="flex justify-center items-center w-full relative h-full p-1 bg-slate-200  "
-                >
-                  <input
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                    }}
-                    className="h-full w-full pl-[20px] border border-gray-300 focus:outline-blue-600 "
-                    placeholder="Search..."
-                  />
+            <SearchBar query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
 
-                  <button type="submit" className="flex ">
-                    <FaSearch className="text-xl text-center absolute right-7 top-3" />
-                  </button>
-                </form>
-              
-            </div>
+            {loadingSearch ? (
 
-            <div className="h-full w-full  bg-[#111b21]">
-              <div className=" w-full overflow-y-auto">
-                {sessionUser == null ? (
-                  <></>
-                ) : (
-                  <button
-                    onClick={sessionHandler}
-                    className="bg-pink-500 flex justify-around text-black w-full h-[40px] "
-                  >
-                    <p className="text-[20px]">{sessionUser.name}</p>
-                    <p className="text-[15px]">{search}</p>
-                  </button>
-                )}
-              </div>
+              <div className=" loader "></div>
 
-              <div className="w-full h-[100%]  overflow-y-auto ">
-                {chatUsers.map((chatUser, index) => {
-                  const participant = chatUser.participants.filter(chat => chat._id !== curruser._id)[0];
-                  const participantName = participant ? participant.name : 'Unknown';
-                  return (<button key={index} onClick={() => (handleChat(chatUser, participant))} className="w-full h-[30px] bg-slate-400 border-black border-2">
-                    {participantName}
-                  </button>
-                  )
+            ) : (
+              <div className="h-full w-full bg-[#111b21] flex flex-col">
+                <SearchResults query={query} results={results} handleSession={handleSession} loadingSearch={loadingSearch} />
+
+
+                {query == "" &&
+                  <div className="w-full h-full overflow-y-auto  space-y-2">
+                    {chatUsers.map((chatUser, index) => {
+                      const participant = chatUser.participants.find((chat) => chat._id !== curruser._id);
+                      const participantName = participant ? participant.name : "Unknown";
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleChat(chatUser, participant)}
+                          className="w-full py-3 px-4 bg-[#2a3942] text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2"
+                        >
+                          <div className="bg-[#3b4a54] h-10 w-10 rounded-full flex items-center justify-center">
+                            {/* Placeholder for user initials or avatar */}
+                            {participantName.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-medium">{participantName}</p>
+                            <p className="text-sm text-gray-400">{participant.email}</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 }
-                )}
+
               </div>
 
+            )}
 
-            </div>
           </div>
 
           {session != null ? <ChatSession /> : <NoSession />}
