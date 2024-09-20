@@ -1,8 +1,9 @@
-const express=require("express");
+const express = require("express");
 const { searchUser } = require("../controllers/SearchUser");
-const {auth}=require("../middlewares/auth")
-const router=express.Router();
+const { auth } = require("../middlewares/auth");
+const router = express.Router();
 
-router.post("/searchUser",auth,searchUser);
+// Route for searching users, protected by authentication middleware
+router.get("/searchUser",auth,searchUser);
 
-module.exports=router;
+module.exports = router;
