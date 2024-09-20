@@ -15,13 +15,10 @@ export function fetchMessages(id,token){
                     Authorization:`Bearer ${token}`
                 }
             });
-
-            
             
             if(!response.data.success){
                 throw new Error(response.data.message);
             }
-            
             dispatch(setMessage(response.data.body));
             
         } catch (error) {
