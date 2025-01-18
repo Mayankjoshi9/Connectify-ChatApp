@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 import { fetchResults } from "../services/searchApi";
 import ChatSession from "../components/chat/ChatSession";
@@ -28,7 +27,10 @@ const Home = () => {
   const chatUsers = useSelector((state) => state.chat.chatUsers);
   const session = useSelector((state) => state.chat.session);
 
+  
 
+  
+  
   // Memoize the debounced function
   const debouncedFetchResults = useMemo(() =>
     debounce((query) => {
@@ -54,22 +56,26 @@ const Home = () => {
 
 
   useEffect(() => {
+    
     dispatch(fetchChat(token, setChatUsers));
-  }, [dispatch, token])
+  }, [dispatch,token])
 
   const handleChat = (currSession, participant) => {
     dispatch(setSession(currSession));
-    localStorage.setItem("session", JSON.stringify(currSession))
+    localStorage.setItem("session", JSON.stringify(currSession));
     dispatch(setSessionUser(participant));
     localStorage.setItem("sessionUser", JSON.stringify(participant));
   }
 
 
-  const handleSession = (user) => {
+  const handleSession = async(user) => {
     setQuery("");
     setResults([]);
-    dispatch(CreateSession(token, curruser, user, setSession));
+    
+    await dispatch(CreateSession(token, curruser, user, setSession));
     handleChat(session, user);
+    dispatch(fetchChat(token, setChatUsers));
+
   }
 
 

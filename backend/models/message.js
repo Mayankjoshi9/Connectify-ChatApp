@@ -1,20 +1,19 @@
 const mongoose=require("mongoose");
 
 const messageSchema=new mongoose.Schema({
-    chatSessionId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Chat',
-        require:true,
-    },
     sender:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-        require:true,
+        required:true,
     },
     content:{
         type:String,
-        require:true,
+        required:true,
     },
+    readBy:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User', 
+    }],
     isDeleted:{
         type:Boolean,
         default:false,

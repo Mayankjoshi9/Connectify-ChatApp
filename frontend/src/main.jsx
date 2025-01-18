@@ -11,6 +11,7 @@ import rootReducer from './reducer';
 const store=configureStore({
    reducer:rootReducer,
 });
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
    <Provider store={store}>

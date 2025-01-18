@@ -96,6 +96,7 @@ exports.otp= async(req,res)=>{
 
         return res.status(200).json({
             success:true,
+            otpBody:otpBody,
             message:"otp Created Successfully",
         })
 
@@ -148,7 +149,7 @@ exports.signup=async (req,res)=>{
            })
         }
         const profile = await Profile.create({
-            image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,  // Add image here
+            image: `https://api.dicebear.com/9.x/initials/svg?seed=${name}`,  // Add image here
         });
 
         const hashedPassword= await bcrypt.hash(password,10);
@@ -227,3 +228,39 @@ exports.changePassword= async(req,res)=>{
         })
     }
 }
+
+exports.searchUser = async (req, res) => {
+    try {
+        const searchTerm = req.query.q ? req.query.q.trim() : '';  // Trim and check query
+        
+        if (!searchTerm) {
+            return res.status(422).json({
+                success: false,
+                message: "Search term (email) parameter is missing"
+            });
+        }
+
+        // Perform a case-insensitive search using regex
+        const users = await User.find({
+            $or:[
+               { name:{$regex:searchTerm,$options:'i'}},
+               { email:{$regex:searchTerm,$options:'i'}}
+            ],
+            
+        }).select("-password").populate("additionalDetails")
+
+
+        return res.status(200).json({
+            success: true,
+            data: users,
+            message: "Users found"
+        });
+
+    } catch (error) {
+        console.error("Error searching for users:", error);  // Log the error for debugging
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while searching for users",
+        });
+    }
+};

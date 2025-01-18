@@ -23,7 +23,6 @@ export function fetchMessages(id,token){
             
         } catch (error) {
             console.log("Error in Fetch Message API");
-            console.log(error);
             toast.error(error.response.data.message);
         }
     }

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const SEARCH_API = "http://localhost:4000/api/v1/search/searchUser";
+const SEARCH_API = "http://localhost:4000/api/v1/auth/searchUser";
 
 export async function fetchResults(searchQuery, token, setError, setResults, setLoadingSearch) {
     if (!searchQuery) return;

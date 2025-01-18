@@ -1,12 +1,9 @@
-
-
 const express=require("express");
 const cors=require("cors")
 require("dotenv").config();
 const dbConnect=require("./config/database.js")
 const userRoutes=require("./routes/auth.js")
 const cookieParser=require("cookie-parser");
-const searchRoute=require("./routes/search.js")
 const Message = require('./models/message.js');
 const chatRoute=require("./routes/chat.js")
 const messageRoute=require("./routes/message.js")
@@ -16,8 +13,7 @@ const {createServer}=require("http");
 const {Server}= require("socket.io");
 const { cloudinaryConnect } = require("./config/cloudinary.js");
 const fileUpload = require("express-fileupload");
-
-
+const chat = require("./models/chat.js");
 
 
 const app=express();
@@ -70,10 +66,9 @@ io.on("connection",(socket)=>{
 	socket.on('sendMessage',async(message)=>{
 		try {
 			const newMessage= await Message.create({
-				chatSessionId:message.chatSessionId,
 				sender:message.senderId,
 				content:message.content});
-
+            await chat.findByIdAndUpdate(message.chatSessionId,{$push:{messages:newMessage},lastMessage:message.content})
 			const populatedMessage = await Message.findById(newMessage._id).populate("sender", "email name");
 			
 			io.to(message.chatSessionId).emit('message',populatedMessage);
@@ -88,11 +83,10 @@ io.on("connection",(socket)=>{
 	})
 })
 
-const port=process.env.PORT|| 2000;
+const port=process.env.PORT|| 4000;
 
 //routes
 app.use("/api/v1/auth",userRoutes);
-app.use("/api/v1/search",searchRoute);
 app.use("/api/v1/chat",chatRoute);
 app.use("/api/v1/message",messageRoute);
 

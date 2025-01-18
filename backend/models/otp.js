@@ -4,12 +4,12 @@ const mailSender=require("../utils/mailsender")
 const otpSchema= new mongoose.Schema({
     email:{
       type:String,
-      require:true,
+      required:true,
       trim:true,
     },
     otp:{
         type:String,
-        require:true,
+        required:true,
     },
     createdAt:{
         type:Date,
@@ -18,20 +18,32 @@ const otpSchema= new mongoose.Schema({
     },
 });
 
-async function sendVerificationEmail(email,otp){
+async function sendVerificationEmail(email, otp) {
     try {
-        await mailSender(email,"Verfication Email",`<h1>Otp for You : ${otp}</h1>`)
+        if (!email || !otp) {
+            throw new Error("Email or OTP is missing");
+        }
+        await mailSender(email, "Verification Email", `<h1>Otp for You: ${otp}</h1>`);
     } catch (error) {
-        console.log("could not send otp ");
-        console.log(error);
+        console.error("Failed to send OTP:", error);
+        throw new Error("Email sending failed");
     }
 }
 
-otpSchema.pre("save",async function(next){
-    if(this.isNew){
-        await sendVerificationEmail(this.email,this.otp);
+otpSchema.pre("save", async function (next) {
+    try {
+        if (this.isNew) {
+            if (!this.email || !this.otp) {
+                throw new Error("Email or OTP is missing in document");
+            }
+            await sendVerificationEmail(this.email, this.otp);
+        }
+        next();
+    } catch (error) {
+        console.error("Error in pre-save middleware:", error);
+        next(error); // Pass error to Mongoose
     }
-    next();
-})
+});
+
 
 module.exports=mongoose.model("Otp",otpSchema)

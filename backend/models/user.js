@@ -3,18 +3,17 @@ const mongoose=require("mongoose");
 const UserSchema= new mongoose.Schema({
     email:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
     },
     name:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
-
     },
     password:{
         type:String,
-        require:true,
+        required:true,
         trim:true,
     },
     additionalDetails:{
@@ -27,7 +26,12 @@ const UserSchema= new mongoose.Schema({
     },
     resetPasswordExpires:{
         type:Date,
-    }
+    },
+    chats:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Chat"
+    }]
+
 },{timestamps:true});
 
 module.exports= mongoose.model("User",UserSchema);

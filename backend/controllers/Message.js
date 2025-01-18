@@ -1,5 +1,6 @@
 const Message = require("../models/message");
-
+const Chat=require("../models/chat");
+const mongoose = require('mongoose');
 
 exports.fetchMessage = async (req, res) => {
     try {
@@ -14,24 +15,31 @@ exports.fetchMessage = async (req, res) => {
                 message: "Parameter missing: chatSessionId",
             });
         }
+        
 
-        // Fetch messages for the chat session where the message is not deleted and not hidden from the user
-        const messages = await Message.find({
-            chatSessionId:chatSessionId,
-            isDeleted: false,
-            deletedFor: { $nin: [userId] }
-        }).populate('sender', 'name email');
+        const chat=await Chat.findById(new mongoose.Types.ObjectId(chatSessionId)).populate({
+             path:"messages",
+             match:{
+                isDeleted:false,
+                deletedFor:{$nin:[userId]}
+             },
+             populate:{
+                path:'sender',
+                select:'name email',
+             }
+        }     );
 
-        if (!messages) {
+        
+        if (!chat ) {
             return res.status(404).json({
                 success: false,
-                message: "No messages found for this chat session",
+                message: "No message found for this chat session",
             });
         }
 
         return res.status(200).json({
             success: true,
-            body: messages,
+            body: chat.messages,
             message: "Messages found",
         });
 

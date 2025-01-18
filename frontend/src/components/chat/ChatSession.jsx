@@ -71,7 +71,7 @@ const ChatSession = () => {
     dispatch(clearAllMessage(token, session._id));
 
   }
-  console.log(sessionUser);
+
 
 
 

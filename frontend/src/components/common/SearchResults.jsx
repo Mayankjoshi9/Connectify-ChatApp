@@ -1,16 +1,10 @@
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types';
-import { IoMdPersonAdd } from "react-icons/io";
-import {toast} from 'react-hot-toast'
+
 
 const SearchResults = ({ query, results, handleSession, loadingSearch }) => {
   const curruser = useSelector((state) => state.auth.user);
  
-  const handleFriendRequest=(e)=>{
-    e.stopPropagation();
-    
-    toast.success("Friend Request Sent");
-  }
 
   return (
     <div>
@@ -36,9 +30,7 @@ const SearchResults = ({ query, results, handleSession, loadingSearch }) => {
                   </div>
                 </div>
 
-                <button onClick={handleFriendRequest} className="m-[10px] p-[10px] bg-red-500">
-                  <IoMdPersonAdd />
-                </button>
+                
               </button>
             ))}
           </ul>
