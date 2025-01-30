@@ -30,14 +30,16 @@ exports.login=async(req,res)=>{
             id:user._id,
            }
            const token=jwt.sign(payload,process.env.JWT_SECRET,{
-            expiresIn:"5h",
+            expiresIn:"3d",
            });
            user.token=token;
            user.password=undefined;
            
            const options={
-             expires:new Date(Date.now()+3*24*60*60*1000),
+             maxAge:new Date(Date.now()+3*24*60*60*1000),
              httpOnly:true,
+             sameSite:"strict",
+             secure:process.env.NODE_ENV !=="development",
            };
             return res.cookie("token",token,options).status(200).json({
             success:true,

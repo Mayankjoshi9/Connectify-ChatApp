@@ -51,11 +51,12 @@ cloudinaryConnect();
 
 io.on("connection",(socket)=>{
 	console.log("User Connected");
-
-	socket.on('CreateSession',(sessionId,user1Id,user2Id)=>{
+// changes
+	socket.on('CreateSession',(sessionId,userids)=>{
 		socket.join(sessionId);
-		io.to(user1Id).emit('sessionCreated',sessionId);
-		io.to(user2Id).emit('sessionCreated',sessionId);
+		userids.forEach(id => {
+			io.to(id).emit('sessionCreated',sessionId);
+		});
 	});
 	
 	socket.on('join',(chatSessionId)=>{
