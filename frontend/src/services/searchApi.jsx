@@ -21,7 +21,6 @@ export async function fetchResults(searchQuery, token, setError, setResults, set
         if (!response.data.success) {
             throw new Error(response.data.message);
         }
-        console.log("api:", response.data.data);
 
         setResults(response.data.data);
     } catch (err) {

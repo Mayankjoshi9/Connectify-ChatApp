@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 const SearchBar = ({ query, handleInputChange, loadingSearch, error }) => {
   return (
 
-    <div className="w-full h-[10%] flex flex-col ">
-      <div className="flex justify-center items-center w-full relative h-full p-2 bg-[#1a2830]  ">
+    <div className="w-full h-[65px] flex flex-col relative bg-search p-2 ">
+      <div className="flex justify-center items-center w-full  h-full   ">
 
         <input
           type="text"
           placeholder="Search for users..."
           value={query}
           onChange={handleInputChange}
-          className="h-full w-full pl-[20px] bg-[#2a3942] outline-none text-white "
+          className="h-full w-full pl-[20px] bg-input outline-none text-white "
 
         />
 

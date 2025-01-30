@@ -2,15 +2,17 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchResults } from "../services/searchApi";
 import ChatSession from "../components/chat/ChatSession";
-import Profile from "./Profile";
 import { CreateSession, fetchChat } from "../services/chatAPI";
 import NoSession from "../components/chat/NoSession";
-import { setSession, setSessionUser } from "../slices/chat";
+import  { addChatUsers, setGroupUsers, setSession, setSessionUser } from "../slices/chat";
 import { setChatUsers } from "../slices/chat";
 import NavBar from "../components/common/NavBar";
 import debounce from 'lodash.debounce';
 import SearchResults from '../components/common/SearchResults'
 import SearchBar from "../components/common/SearchBar";
+import { MdOutlineGroups } from "react-icons/md";
+import io from "socket.io-client";
+
 
 
 const Home = () => {
@@ -27,16 +29,23 @@ const Home = () => {
   const chatUsers = useSelector((state) => state.chat.chatUsers);
   const session = useSelector((state) => state.chat.session);
 
-  
 
-  
-  
+  const socket = useMemo(
+      () =>
+        io("http://localhost:4000", {
+          transports: ["websocket"],
+          withCredentials: true,
+        }),
+      []
+    );
+
+
   // Memoize the debounced function
   const debouncedFetchResults = useMemo(() =>
     debounce((query) => {
-      dispatch(fetchResults(query, token, setError, setResults, setLoadingSearch));
+      fetchResults(query, token, setError, setResults, setLoadingSearch);
     }, 300),
-    [dispatch, token, setError, setResults, setLoadingSearch]
+    [ token, setError, setResults, setLoadingSearch]
   );
 
   const handleInputChange = useCallback(
@@ -47,7 +56,7 @@ const Home = () => {
     [debouncedFetchResults] // Use the memoized debounced function
   );
 
-  // Optional: Cancel the debounced function on component unmount
+  // Cancel the debounced function on component unmount
   useEffect(() => {
     return () => {
       debouncedFetchResults.cancel(); // Cancel any pending debounced calls
@@ -56,39 +65,56 @@ const Home = () => {
 
 
   useEffect(() => {
-    
     dispatch(fetchChat(token, setChatUsers));
-  }, [dispatch,token])
+  }, [dispatch, token])
 
-  const handleChat = (currSession, participant) => {
+  const handleChat = async (currSession, participant) => {
     dispatch(setSession(currSession));
     localStorage.setItem("session", JSON.stringify(currSession));
-    dispatch(setSessionUser(participant));
-    localStorage.setItem("sessionUser", JSON.stringify(participant));
+    if(Array.isArray(participant)){
+      dispatch(setGroupUsers(participant));
+      localStorage.setItem("groupUsers",JSON.stringify(participant));
+    }
+    else{
+      dispatch(setSessionUser(participant));
+      localStorage.setItem("sessionUser", JSON.stringify(participant));
+    }
+    
   }
+  
+  useEffect(()=>{
+    socket.on("sessionCreated",
+      (sessionId)=>{
+        dispatch(addChatUsers(sessionId));
+      }
+    )
+  },[dispatch,socket])
 
-
-  const handleSession = async(user) => {
+  const handleSession = async (user) => {
     setQuery("");
     setResults([]);
-    
+
     await dispatch(CreateSession(token, curruser, user, setSession));
+    socket.emit("CreateSession",session._id,[curruser._id,user._id]);
     handleChat(session, user);
     dispatch(fetchChat(token, setChatUsers));
 
   }
 
 
-
+ console.log(chatUsers)
   return (
     <div className="w-screen h-screen flex flex-col text-black ">
-      <NavBar />
+
+      <NavBar socket={socket}/>
 
       {loading ? (
         <div className="loader"></div>
       ) : (
+
         <div className="w-full h-full flex ">
-          <div className="w-[35%] h-full  text-black flex flex-col justify-start items-center">
+
+          <div className="w-[50%] h-full  text-black flex flex-col justify-start items-center">
             <SearchBar query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
 
             {loadingSearch ? (
@@ -96,31 +122,54 @@ const Home = () => {
               <div className=" loader "></div>
 
             ) : (
-              <div className="h-full w-full bg-[#111b21] flex flex-col">
+              <div className="h-full w-full bg-primary flex flex-col">
                 <SearchResults query={query} results={results} handleSession={handleSession} loadingSearch={loadingSearch} />
 
 
                 {query == "" &&
-                  <div className="w-full h-full overflow-y-auto  space-y-2">
+                  <div className="w-full h-full overflow-y-auto  space-y-1">
                     {chatUsers.map((chatUser, index) => {
-                      const participant = chatUser.participants.find((chat) => chat._id !== curruser._id);
-                      const participantName = participant ? participant.name : "Unknown";
+                      const isGroup=chatUser.isGroup;
+                      if(isGroup===false){
+                      const participant = chatUser.participants.filter((chat) => chat._id !== curruser._id);
+                      const participantName = participant[0] ? participant[0].name : "Unknown";
                       return (
                         <button
                           key={index}
-                          onClick={() => handleChat(chatUser, participant)}
-                          className="w-full py-3 px-4 bg-[#2a3942] text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2"
+                          onClick={() => handleChat(chatUser, participant[0])}
+                          className="w-full py-3 px-4 bg-chat text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2"
                         >
-                          <div className="bg-[#3b4a54] h-10 w-10 rounded-full flex items-center justify-center">
-                            {/* Placeholder for user initials or avatar */}
-                            {participantName.charAt(0)}
+                          <div className="bg-parti h-10 w-10 rounded-full flex items-center justify-center">
+                            <img src={participant[0].additionalDetails?.image} alt="" className="rounded-full" />
                           </div>
                           <div>
                             <p className="font-medium">{participantName}</p>
-                            <p className="text-sm text-gray-400">{participant.email}</p>
+                            <p className="text-sm text-gray-400">{chatUser.lastMessage}</p>
                           </div>
                         </button>
                       );
+                      }
+                      else{
+                        const groupName=chatUser.groupName;
+                        return(
+                          <button
+                           key={index}
+                           onClick={()=>handleChat(chatUser,chatUser.participants)}
+                          className="w-full py-3 px-4 bg-chat text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2"
+                          >
+                            <div className="bg-parti h-10 w-10 rounded-full flex items-center justify-center">
+                            
+                            <MdOutlineGroups className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{groupName}</p>
+                            <p className="text-sm text-gray-400">{chatUser.lastMessage}</p>
+                          </div>
+                          </button>
+                        );
+
+                      }
+                      
                     })}
                   </div>
                 }
@@ -131,9 +180,11 @@ const Home = () => {
 
           </div>
 
-          {session != null ? <ChatSession /> : <NoSession />}
 
-          <Profile />
+
+          {session != null ? <ChatSession socket={socket} /> : <NoSession />}
+
+
         </div>
       )}
     </div>

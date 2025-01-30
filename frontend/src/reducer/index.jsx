@@ -4,6 +4,7 @@ import authReducer from "../slices/auth";
 import chatReducer from "../slices/chat";
 import messageReducer from "../slices/message"
 
+
 const rootReducer= combineReducers({
     auth:authReducer,
     chat:chatReducer,

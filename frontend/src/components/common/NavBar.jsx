@@ -1,39 +1,28 @@
 
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../services/authAPI";
-import { IoIosNotifications } from "react-icons/io";
-import { useDispatch } from "react-redux";
-import { MdOutlineGroupAdd } from "react-icons/md";
-import { CiLogout } from "react-icons/ci";
+import GroupModel from "../models/groupModel"
+import NavDashboard from "../dashboards/NavDashboard"
+import PropTypes from "prop-types";
 
 
 
-const NavBar = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+
+const NavBar = ({socket}) => {
+  
   return (
     <>
-        <nav className="bg-gray-900 w-full h-[8%] flex justify-around items-center">
-        <button className="text-white text-2xl">
-        <MdOutlineGroupAdd />
-        </button>
-        <button className="relative text-white text-3xl">
-        <div className=" absolute text-sm text-white w-5 h-5 rounded-full bg-red-500 right-0 -top-1 ">1</div>
-        <IoIosNotifications />
-        </button>
-        <button
-          className="text-2xl text-white"
-          onClick={() => {
-            dispatch(logout(navigate));
-          }}
-        >
-          <CiLogout />
-        </button>
+      <nav className="bg-gray-900 w-full h-[8%] px-[1%] flex justify-between items-center">
+        <GroupModel socket={socket}/>
+        <NavDashboard socket={socket}/>
       </nav>
     </>
   )
 }
+NavBar.propTypes = {
+  socket: PropTypes.object.isRequired, // Ensures socket is an object and required
+};
 
 export default NavBar;
+
+
 
 

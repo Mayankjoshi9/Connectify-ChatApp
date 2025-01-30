@@ -4,6 +4,7 @@ import { setLoading } from "../slices/auth";
 import { setToken } from "../slices/auth";
 import {setUser} from "../slices/auth";
 import axios from "axios"
+import {  setSession, setSessionUser } from "../slices/chat";
 
 const LOGIN_API="http://localhost:4000/api/v1/auth/login";
 const SIGNUP_API="http://localhost:4000/api/v1/auth/signup";
@@ -120,6 +121,9 @@ export function sendOtp(email,navigate){
 export function logout(navigate){
     return (dispatch)=>{
         dispatch(setToken(null));
+        dispatch(setSession(null));
+        dispatch(setUser(null));
+        dispatch(setSessionUser(null));
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("session");
