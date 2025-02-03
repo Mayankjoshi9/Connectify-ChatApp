@@ -49,9 +49,14 @@ export default function NavDashboard({socket}) {
                     vertical: 'top',
                     horizontal: 'left',
                 }}
+                sx={{
+                    width:350,
+                    height:300,
+                    
+                }}
             >
-                <MenuItem >
-                    <ProfileModel user={curruser} className="w-full h-full"/>
+                <MenuItem  >
+                    <ProfileModel user={curruser} />
                 </MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={() => {

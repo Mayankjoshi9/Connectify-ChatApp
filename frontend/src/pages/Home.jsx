@@ -110,9 +110,9 @@ const Home = () => {
         <div className="loader"></div>
       ) : (
 
-        <div className="w-full h-full flex ">
+        <div className="w-screen h-screen flex ">
 
-          <div className="w-[50%] h-full  text-black flex flex-col justify-start items-center">
+          <div className={`md:w-[50%] ${session?"w-0":"w-full"}  h-full  text-black flex flex-col justify-start items-center`}>
             <SearchBar query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
 
             {loadingSearch ? (
@@ -179,8 +179,10 @@ const Home = () => {
           </div>
 
 
-
+          <div className={`md:w-full ${session?"w-full":"w-0"}  `}>
           {session != null ? <ChatSession handleSession={handleSession} socket={socket} /> : <NoSession />}
+            
+          </div>
 
 
         </div>

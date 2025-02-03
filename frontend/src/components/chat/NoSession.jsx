@@ -1,7 +1,7 @@
 const NoSession = () => {
   return (
-    <div className='w-full h-full flex flex-col items-center justify-center bg-[#2a3942] text-gray-300 p-8'>
-      <div className='text-center'>
+    <div className='w-full h-full flex flex-col items-center justify-center bg-[#2a3942] text-gray-300  pt-[20%]'>
+      <div className='w-full h-full text-center'>
         <svg className='w-24 h-24 text-gray-500 mx-auto mb-6' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
           <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M6 9L12 15L18 9' />
         </svg>

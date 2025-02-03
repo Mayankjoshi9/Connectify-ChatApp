@@ -7,6 +7,8 @@ import bgImg from "../../assets/chatBg.jpg";
 import GroupChatModel from "../models/GroupChatModel.jsx";
 import PropTypes from "prop-types";
 import ProfileModel from "../models/ProfileModel";
+import  {setSession } from "../../slices/chat";
+
 
 const ChatSession = ({ socket, handleSession }) => {
   const messages = useSelector((state) => state.message.messages);
@@ -114,7 +116,9 @@ const ChatSession = ({ socket, handleSession }) => {
 
   return (
     <div className="w-full h-full flex flex-col relative border-x-[1px] border-[#3d3f41]">
+      
       <div className="w-full h-12 pl-[20px] pr-[100px] bg-[#202c33] flex justify-between items-center z-0">
+        <button onClick={()=>dispatch(setSession(null))}className="text-white md:hidden">back</button>
         {session.isGroup ? (
           <GroupChatModel handleSession={handleSession} />
         ) : (
