@@ -4,7 +4,7 @@ const initialState={
     session:localStorage.getItem("session")?JSON.parse(localStorage.getItem("session")):null,
     chatUsers:[],
     sessionUser:localStorage.getItem("sessionUser")?JSON.parse(localStorage.getItem("sessionUser")):null,
-    groupUsers:[],
+    
 };
 
 const chatSlice=createSlice({
@@ -22,12 +22,9 @@ const chatSlice=createSlice({
         },
         setSessionUser(state,value){
             state.sessionUser=value.payload;
-        },
-        setGroupUsers(state,value){
-            state.groupUsers=value.payload;
-        },
+        }
     }
 });
 
-export const {setSession,setChatUsers,setSessionUser,addChatUsers,setGroupUsers} = chatSlice.actions;
+export const {setSession,setChatUsers,setSessionUser,addChatUsers} = chatSlice.actions;
 export default chatSlice.reducer;

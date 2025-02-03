@@ -4,7 +4,7 @@ import { fetchResults } from "../services/searchApi";
 import ChatSession from "../components/chat/ChatSession";
 import { CreateSession, fetchChat } from "../services/chatAPI";
 import NoSession from "../components/chat/NoSession";
-import  { addChatUsers, setGroupUsers, setSession, setSessionUser } from "../slices/chat";
+import  { addChatUsers, setSession, setSessionUser } from "../slices/chat";
 import { setChatUsers } from "../slices/chat";
 import NavBar from "../components/common/NavBar";
 import debounce from 'lodash.debounce';
@@ -20,14 +20,14 @@ const Home = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [loadingSearch, setLoadingSearch] = useState(false);
-
+  
   const dispatch = useDispatch();
 
   const loading = useSelector((state) => state.auth.loading);
   const curruser = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
   const chatUsers = useSelector((state) => state.chat.chatUsers);
-  const session = useSelector((state) => state.chat.session);
+  let session = useSelector((state) => state.chat.session);
 
 
   const socket = useMemo(
@@ -69,17 +69,17 @@ const Home = () => {
   }, [dispatch, token])
 
   const handleChat = async (currSession, participant) => {
+   
     dispatch(setSession(currSession));
     localStorage.setItem("session", JSON.stringify(currSession));
-    if(Array.isArray(participant)){
-      dispatch(setGroupUsers(participant));
-      localStorage.setItem("groupUsers",JSON.stringify(participant));
-    }
-    else{
+    
+    if(!Array.isArray(participant)){
       dispatch(setSessionUser(participant));
       localStorage.setItem("sessionUser", JSON.stringify(participant));
-    }
+
+    }   
     
+
   }
   
   useEffect(()=>{
@@ -94,15 +94,13 @@ const Home = () => {
     setQuery("");
     setResults([]);
 
-    await dispatch(CreateSession(token, curruser, user, setSession));
-    socket.emit("CreateSession",session._id,[curruser._id,user._id]);
-    handleChat(session, user);
+   const session1=await dispatch(CreateSession(token, curruser, user, setSession));
+    socket.emit("CreateSession",session1?._id,[curruser?._id,user?._id]);
+    handleChat(session1, user);
     dispatch(fetchChat(token, setChatUsers));
 
   }
 
-
- console.log(chatUsers)
   return (
     <div className="w-screen h-screen flex flex-col text-black ">
 
@@ -182,7 +180,7 @@ const Home = () => {
 
 
 
-          {session != null ? <ChatSession socket={socket} /> : <NoSession />}
+          {session != null ? <ChatSession handleSession={handleSession} socket={socket} /> : <NoSession />}
 
 
         </div>

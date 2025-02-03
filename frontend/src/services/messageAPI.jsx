@@ -1,8 +1,10 @@
 import axios from "axios"
 import {toast} from "react-hot-toast";
 import { setMessage } from "../slices/message"
-const FETCHMESSAGE_URL="http://localhost:4000/api/v1/message/fetchMessages/"
-const CLEARALLMESSAGE_URL="http://localhost:4000/api/v1/message/clearAllMessage/"
+import { Serverurl } from '../config';
+
+const FETCHMESSAGE_URL=Serverurl+"api/v1/message/fetchMessages/"
+const CLEARALLMESSAGE_URL=Serverurl+"api/v1/message/clearAllMessage/"
 
 export function fetchMessages(id,token){
     return async(dispatch)=>{

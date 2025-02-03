@@ -5,12 +5,13 @@ import { setToken } from "../slices/auth";
 import {setUser} from "../slices/auth";
 import axios from "axios"
 import {  setSession, setSessionUser } from "../slices/chat";
+import { Serverurl } from '../config';
 
-const LOGIN_API="http://localhost:4000/api/v1/auth/login";
-const SIGNUP_API="http://localhost:4000/api/v1/auth/signup";
-const OTP_API="http://localhost:4000/api/v1/auth/sendOtp";
-const RESETPASSTOKEN_API="http://localhost:4000/api/v1/auth/resetPasswordToken";
-const RESETPASS_API="http://localhost:4000/api/v1/auth/resetPassword";
+const LOGIN_API=Serverurl+"api/v1/auth/login";
+const SIGNUP_API=Serverurl+"api/v1/auth/signup";
+const OTP_API=Serverurl+"api/v1/auth/sendOtp";
+const RESETPASSTOKEN_API=Serverurl+"api/v1/auth/resetPasswordToken";
+const RESETPASS_API=Serverurl+"api/v1/auth/resetPassword";
 
 
 export function login(email,password,navigate){
@@ -55,7 +56,7 @@ export function login(email,password,navigate){
 
 export function signup(name,email,password,otp,navigate){
     return async(dispatch)=>{
-        const toastId=toast.loading("Loading...");
+        
         dispatch(setLoading(true));
         try {
             const response=await axios({
@@ -82,7 +83,7 @@ export function signup(name,email,password,otp,navigate){
             console.log("signup api error.")
             toast.error(error.response.data.message);
         }
-        toast.dismiss(toastId);
+        
         dispatch(setLoading(false));
 
     }
@@ -90,7 +91,7 @@ export function signup(name,email,password,otp,navigate){
 
 export function sendOtp(email,navigate){
     return async(dispatch)=>{
-        const toastId=toast.loading("Loading...");
+       
         dispatch(setLoading(true));
         try {
             const response=await axios({
@@ -113,7 +114,7 @@ export function sendOtp(email,navigate){
             toast.error(error.response.data.message);
         }
         dispatch(setLoading(false));
-        toast.dismiss(toastId);
+        
     }
 }
 

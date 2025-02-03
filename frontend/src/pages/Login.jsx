@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../services/authAPI';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../services/authAPI";
+import { Link, useNavigate } from "react-router-dom";
+import image from "../assets/icon.png"
+import ChatBg from "../assets/loginBg.jpg"
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const { email, password } = formData;
 
@@ -27,17 +29,27 @@ const Login = () => {
   const loading = useSelector((state) => state.auth.loading);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="min-h-screen flex items-center justify-center bg-primary px-4"
+      style={{
+        backgroundImage: `url(${ChatBg})`,
+        backgroundSize: "cover",
+        
+        height:"100vh",
+        width:"100vw"
+      }}
+    >
+
       {loading ? (
-        <div className="text-white text-2xl">Loading...</div>
+        <div className="text-white text-lg sm:text-2xl">Loading...</div>
       ) : (
-        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
-            Welcome Back
+        <div className="bg-chat shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
+
+          <h2 className="flex text-xl sm:text-2xl font-semibold text-center text-white mb-4 sm:mb-6">
+            Chat Now ! <img src={image} className="w-12 h-12 ml-1" />
           </h2>
-          <form onSubmit={submitHandler} className="flex flex-col gap-4">
+          <form onSubmit={submitHandler} className="flex flex-col gap-3 sm:gap-4">
             <div className="flex flex-col">
-              <label htmlFor="email" className="text-gray-600 mb-2">
+              <label htmlFor="email" className="text-gray-300 mb-1 sm:mb-2">
                 Email Address
               </label>
               <input
@@ -47,13 +59,13 @@ const Login = () => {
                 value={email}
                 onChange={changeHandler}
                 required
-                className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 rounded-md border border-parti bg-search text-white focus:outline-none focus:ring-2 focus:ring-input"
                 placeholder="Enter your email"
               />
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="password" className="text-gray-600 mb-2">
+              <label htmlFor="password" className="text-gray-300 mb-1 sm:mb-2">
                 Password
               </label>
               <input
@@ -63,31 +75,24 @@ const Login = () => {
                 value={password}
                 onChange={changeHandler}
                 required
-                className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 rounded-md border border-parti bg-search text-white focus:outline-none focus:ring-2 focus:ring-input"
                 placeholder="Enter your password"
               />
             </div>
 
             <button
               type="submit"
-              className="mt-4 p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
+              className="mt-3 sm:mt-4 p-3 w-full bg-[#2563EB] hover:bg-[#1E4DB7] text-white rounded-md  transition duration-200"
             >
               Login
             </button>
           </form>
 
-          <div className="flex justify-between items-center mt-4">
-            <Link
-              to="/resetpassword"
-              className="text-blue-600 hover:underline"
-            >
+          <div className="flex flex-col sm:flex-row sm:justify-between items-center mt-4">
+            <Link to="/resetpassword" className="text-blue-400 hover:underline">
               Forgot Password?
             </Link>
-
-            <Link
-              to="/signup"
-              className="text-blue-600 hover:underline"
-            >
+            <Link to="/signup" className="text-blue-400 hover:underline mt-2 sm:mt-0">
               Create an Account
             </Link>
           </div>

@@ -21,19 +21,23 @@ const style = {
   borderRadius:"16px"
 };
 
-const ProfileModel=({type}) =>{
+const ProfileModel=({user}) =>{
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const curruser = useSelector((state) => state.auth.user);
-  const sessionUser = useSelector((state) => state.chat.sessionUser);
+ 
 
 
 
   return (
     <div className="w-full h-full">
-      {type=="my"? (<div className="w-full h-full" onClick={handleOpen}>
-        Profile
+      {(user?._id==curruser?._id)? (<div className="flex w-[400px] h-full gap-5 pt-1 pl-20 mr-10 cursor-pointer" onClick={handleOpen}>
+        <img
+            className="w-[35px] h-[35px] rounded-full"
+            src={user?.additionalDetails?.image}
+          />
+          <div className="text-gray-500 text-xl font-semibold">Your Profile</div>
       </div>):(
         <div
           className="flex w-[400px] h-full gap-5 pt-1 pl-20 mr-10 cursor-pointer"
@@ -41,9 +45,9 @@ const ProfileModel=({type}) =>{
         >
           <img
             className="w-[35px] h-[35px] rounded-full"
-            src={sessionUser?.additionalDetails?.image}
+            src={user?.additionalDetails?.image}
           />
-          <div className="text-white text-xl font-semibold">{sessionUser?.name}</div>
+          <div className="text-white text-xl font-semibold">{user?.name}</div>
         </div>
       )}
       <Modal
@@ -61,7 +65,7 @@ const ProfileModel=({type}) =>{
       >
         <Fade in={open}>
           <Box sx={style}>
-              {type=="my" ?(<ProfileComp user={curruser}/>):(<ProfileComp user={sessionUser}/>)}
+              <ProfileComp user={user}/>
           </Box>
         </Fade>
       </Modal>
@@ -70,8 +74,14 @@ const ProfileModel=({type}) =>{
 }
 
 
-ProfileModel.prototype={
-    type:PropTypes.string.isRequired,
-}
+ProfileModel.propTypes = {
+  user: PropTypes.shape({
+    _id:PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    additionalDetails: PropTypes.shape({
+      image: PropTypes.string, 
+    }),
+  }).isRequired,
+};
 
 export default ProfileModel;
