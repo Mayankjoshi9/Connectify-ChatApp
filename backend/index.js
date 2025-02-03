@@ -20,7 +20,7 @@ const app=express();
 const server= createServer(app);
 const io=new Server(server,{
 	cors:{
-		origin:"*",
+		origin:process.env.FRONTEND_URL,
 		methods:["GET","POST"],
 		credentials:true,
 	},
@@ -29,7 +29,7 @@ const io=new Server(server,{
 
 app.use(
 	cors({
-		origin:"*",
+		origin:process.env.FRONTEND_URL,
 		credentials:true,
 	})
 )

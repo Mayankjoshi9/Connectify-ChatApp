@@ -1,5 +1,6 @@
 const mongoose =require("mongoose");
-const mailSender=require("../utils/mailsender")
+const mailSender=require("../utils/mailsender");
+const { OtpEmail } = require("../mail/OtpEmail");
 
 const otpSchema= new mongoose.Schema({
     email:{
@@ -23,7 +24,8 @@ async function sendVerificationEmail(email, otp) {
         if (!email || !otp) {
             throw new Error("Email or OTP is missing");
         }
-        await mailSender(email, "Verification Email", `<h1>Otp for You: ${otp}</h1>`);
+        await mailSender(email, "Verification Email", OtpEmail({ otp }));
+
     } catch (error) {
         console.error("Failed to send OTP:", error);
         throw new Error("Email sending failed");
