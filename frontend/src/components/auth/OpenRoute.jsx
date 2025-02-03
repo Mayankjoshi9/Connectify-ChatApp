@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const OpenRoute = ({children}) => {
   const token=useSelector((state)=>state.auth.token);
   if(token!=null){
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace/>;
   }
   else{
      return children;
