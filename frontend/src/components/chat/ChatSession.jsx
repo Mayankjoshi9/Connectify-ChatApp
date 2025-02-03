@@ -1,28 +1,37 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAllMessage, fetchMessages } from "../../services/messageAPI";
+import { fetchMessages } from "../../services/messageAPI";
 import { addMessage } from "../../slices/message";
 import { IoMdSend } from "react-icons/io";
 import bgImg from "../../assets/chatBg.jpg";
-import GroupChatModel from "../models/GroupChatModel.jsx"
+import GroupChatModel from "../models/GroupChatModel.jsx";
 import PropTypes from "prop-types";
 import ProfileModel from "../models/ProfileModel";
 
-
-const ChatSession = ({socket}) => {
+const ChatSession = ({ socket, handleSession }) => {
   const messages = useSelector((state) => state.message.messages);
   const [newMessage, setNewMessage] = useState("");
   const session = useSelector((state) => state.chat.session);
   const curruser = useSelector((state) => state.auth.user);
+  const sessionUser = useSelector((state) => state.chat.sessionUser);
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
-
-  
+  const [chatLoader, setChatLoader] = useState(true);
 
   const messageContainerRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchMessages(session._id, token));
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchMessages(session._id, token));
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      } finally {
+        setChatLoader(false);
+      }
+    };
+
+    fetchData();
   }, [session._id, dispatch, token]);
 
   useEffect(() => {
@@ -33,86 +42,104 @@ const ChatSession = ({socket}) => {
     };
 
     socket.on("message", handleMessage);
-
     return () => {
-      socket.off("message", handleMessage); // Clean up the specific listener
-      socket.emit("leave", session._id);
+      socket.off("message", handleMessage);
     };
-  }, [dispatch, socket, session._id,token]);
-
+  }, [dispatch, socket, session._id]);
 
   useEffect(() => {
-    // Scroll to the bottom of the message container whenever the messages change
     if (messageContainerRef.current) {
-      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  const sendMessageHandler = (e) => {
-    e.preventDefault();
-    const message = {
-      chatSessionId: session._id,
-      senderId: curruser._id,
-      content: newMessage,
-    };
-    socket.emit("sendMessage", message);
-    setNewMessage("");
-  };
+  const sendMessageHandler = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!newMessage.trim()) return;
 
-  const clearHandler = () => {
-    dispatch(clearAllMessage(token, session._id));
+      const message = {
+        chatSessionId: session._id,
+        senderId: curruser._id,
+        content: newMessage.trim(),
+      };
 
-  }
+      socket.emit("sendMessage", message);
+      setNewMessage("");
+    },
+    [newMessage, session._id, curruser._id, socket]
+  );
 
-  return (
-    <div className="w-full h-full flex flex-col relative border-x-[1px] border-[#3d3f41]  ">
-      
-  
-      <div className="w-full h-12 pl-[20px] pr-[100px] bg-[#202c33]  flex justify-between items-center z-0">
-        {session.isGroup?(<GroupChatModel/>):
-        (<ProfileModel type={"other"}/>)
-        }
-  
-        <button onClick={clearHandler} className="w-[40px] h-[20px] text-white font-semibold">
-          clear
-        </button>
-      </div>
-  
-      <div
-        ref={messageContainerRef}
-        className="h-[540px] flex-col overflow-y-auto p-5 border-none z-0"
-        style={{ backgroundImage: `url(${bgImg})` }}
-      >
-        {messages.map((message, index) => (
+  const renderedMessages = useMemo(
+    () =>
+      messages.map((message, index) => (
+        <div
+          key={index}
+          className={`flex p-1 ${
+            curruser._id === message.sender._id
+              ? "justify-end"
+              : "justify-start"
+          }`}
+        >
           <div
-            key={index}
-            className={`flex p-1 ${curruser._id === message.sender._id ? "justify-end" : "justify-start"}`}
+            className={`max-w-[500px] px-2 py-3 rounded-md ${
+              curruser._id === message.sender._id
+                ? "bg-[#005c4b]"
+                : "bg-gray-600"
+            }`}
           >
             <div
-              className={`max-w-[500px] px-2 py-3 rounded-md ${
-                curruser._id === message.sender._id ? "bg-[#005c4b]" : "bg-gray-600"
+              className={`text-sm ${
+                curruser._id === message.sender._id
+                  ? "text-right text-green-400 font-bold"
+                  : "text-purple-300 font-bold"
               }`}
             >
-              <div
-                className={`text-sm ${
-                  curruser._id === message.sender._id
-                    ? "text-right text-green-400 font-bold"
-                    : "text-purple-300 font-bold"
-                }`}
-              >
-                {message.sender._id == curruser._id ? "you" : message.sender.name}
-              </div>
-              <div
-                className={`text-base flex flex-col font-medium text-white ${curruser._id === message.sender._id ? "text-right" : ""}`}
-              >
-                {message.content}
-                <small>{new Date(message.createdAt).toLocaleString()}</small>
-              </div>
+              {message.sender._id === curruser._id ? "You" : message.sender.name}
+            </div>
+            <div
+              className={`text-base flex flex-col font-medium text-white ${
+                curruser._id === message.sender._id ? "text-right" : ""
+              }`}
+            >
+              {message.content}
+              <small>{new Date(message.createdAt).toLocaleString()}</small>
             </div>
           </div>
-        ))}
+        </div>
+      )),
+    [messages, curruser._id]
+  );
+
+  return (
+    <div className="w-full h-full flex flex-col relative border-x-[1px] border-[#3d3f41]">
+      <div className="w-full h-12 pl-[20px] pr-[100px] bg-[#202c33] flex justify-between items-center z-0">
+        {session.isGroup ? (
+          <GroupChatModel handleSession={handleSession} />
+        ) : (
+          <ProfileModel user={sessionUser} />
+        )}
       </div>
-  
+
+      <div
+        ref={messageContainerRef}
+        className="h-full flex-col overflow-y-auto p-5 border-none z-0"
+        style={{ backgroundImage: `url(${bgImg})` }}
+      >
+        {chatLoader ? (
+          <div className="w-full h-full flex justify-center items-center pt-[200px]">
+            <div className="lds-spinner">
+              {[...Array(12)].map((_, i) => (
+                <div key={i}></div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          renderedMessages
+        )}
+      </div>
+
       <form
         className="w-full h-[70px] p-3 bg-search absolute bottom-0 flex items-center z-0"
         onSubmit={sendMessageHandler}
@@ -124,17 +151,17 @@ const ChatSession = ({socket}) => {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."
         />
-        <button type={newMessage === "" ? "reset" : "submit"} className="ml-3">
+        <button type="submit" disabled={!newMessage.trim()} className="ml-3">
           <IoMdSend className="w-8 h-8 text-green-300" />
         </button>
       </form>
     </div>
   );
-  
-  
 };
 
 ChatSession.propTypes = {
-  socket: PropTypes.object.isRequired, // Ensures socket is an object and required
+  socket: PropTypes.object.isRequired,
+  handleSession: PropTypes.func.isRequired,
 };
+
 export default ChatSession;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../services/authAPI";
 import ProfileModel from '../models/ProfileModel';
@@ -16,6 +16,7 @@ export default function NavDashboard({socket}) {
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const curruser=useSelector((state)=>state.auth.user);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -50,7 +51,7 @@ export default function NavDashboard({socket}) {
                 }}
             >
                 <MenuItem >
-                    <ProfileModel type={"my"} className="w-full h-full"/>
+                    <ProfileModel user={curruser} className="w-full h-full"/>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={() => {

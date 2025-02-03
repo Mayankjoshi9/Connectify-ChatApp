@@ -7,7 +7,7 @@ const SearchResults = ({ query, results, handleSession, loadingSearch }) => {
  
 
   return (
-    <div>
+    <>
       {query != "" && (<div className="w-full h-full overflow-y-auto">
         {results.length > 0 ? (
           <ul className="space-y-2">
@@ -15,7 +15,7 @@ const SearchResults = ({ query, results, handleSession, loadingSearch }) => {
               <button
                 onClick={() => handleSession(user)}
                 key={user._id}
-                className={`w-full h-[20%] py-3 px-4 bg-[#2a3942] text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2 ${user._id == curruser._id ? "hidden" : ""}`}
+                className={`border-b border-primary w-full h-[20%] py-3 px-4 bg-[#2a3942] text-white rounded-b-lg hover:bg-[#3c4f55] transition-colors duration-200 flex items-center space-x-2 ${user._id == curruser._id ? "hidden" : ""}`}
               >
                 <div  className="flex gap-5 w-[400px] h-full ">
                   <div className="bg-[#3b4a54] h-10 w-10 rounded-full flex items-center justify-center">
@@ -42,7 +42,7 @@ const SearchResults = ({ query, results, handleSession, loadingSearch }) => {
           )
         )}
       </div>)}
-    </div>
+    </>
   )
 }
 

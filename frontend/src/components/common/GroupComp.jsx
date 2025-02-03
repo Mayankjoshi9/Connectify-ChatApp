@@ -10,7 +10,7 @@ import SearchBar from "./SearchBar";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { fetchResults } from "../../services/searchApi";
-import {useDispatch} from "react-redux"
+import { useDispatch } from "react-redux"
 import { CreateGroup } from '../../services/chatAPI';
 import PropTypes from "prop-types";
 import { addChatUsers } from '../../slices/chat';
@@ -20,7 +20,7 @@ const ListItem = styled('li')(({ theme }) => ({
     margin: theme.spacing(0.5),
 }));
 
-export default function GroupComp({handleClose,socket}) {
+export default function GroupComp({ handleClose, socket }) {
     const [info, setInfo] = useState({
         chatName: "",
         users: [],
@@ -31,9 +31,9 @@ export default function GroupComp({handleClose,socket}) {
     const [loadingSearch, setLoadingSearch] = useState(false);
 
     const token = useSelector((state) => state.auth.token);
-    const dispatch=useDispatch();
-    const session=useSelector((state)=> state.chat.session);
-    const groupUsers=useSelector((state)=>state.chat.groupUsers);
+    const dispatch = useDispatch();
+    const session = useSelector((state) => state.chat.session);
+    const groupUsers = useSelector((state) => state.chat.groupUsers);
 
 
     // Memoize the debounced function
@@ -77,7 +77,7 @@ export default function GroupComp({handleClose,socket}) {
 
 
     }
-    
+
 
 
     const handleDelete = (userToDelete) => () => {
@@ -90,67 +90,96 @@ export default function GroupComp({handleClose,socket}) {
 
         });
     };
-    
-    useEffect(()=>{
-        socket.on("sessionCreated",
-          (sessionId)=>{
-            dispatch(addChatUsers(sessionId));
-          }
-        )
-      },[dispatch,socket])
 
-    const submitHandler=async(e)=>{
+    useEffect(() => {
+        socket.on("sessionCreated",
+            (sessionId) => {
+                dispatch(addChatUsers(sessionId));
+            }
+        )
+    }, [dispatch, socket])
+
+    const submitHandler = async (e) => {
         e.preventDefault();
-        const data=info.users.map((user)=>user._id);
-        await dispatch(CreateGroup(token,info.chatName,data));
-        socket.emit("CreateSession",session._id,groupUsers);
+        if(info.chatName=="" || info.users.length==0){
+            return;
+        }
+        const data = info.users.map((user) => user._id);
+        await dispatch(CreateGroup(token, info.chatName, data));
+        socket.emit("CreateSession", session._id, groupUsers);
         handleClose();
     }
 
     return (
         <>
-            <form onSubmit={submitHandler} className="flex flex-col w-full h-full p-10 ">
+            <form onSubmit={submitHandler} className="flex flex-col w-full h-full p-10  text-white ">
                 <h1 className="flex justify-center text-4xl ">Create Group Chat</h1>
                 <TextField id="outlined-basic" label="Chat Name" value={info.chatName} onChange={(e) => setInfo((prevInfo) => ({ ...prevInfo, chatName: e.target.value, }))}
-                 variant="outlined" sx={{
-                    my:4
-                 }}
-                   
-                 />
-                
-                <SearchBar  query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
-                {loadingSearch ? (
-
-                    <div className=" loader "></div>
-
-                ) : (<SearchResults query={query} results={results} handleSession={handleSession} loadingSearch={loadingSearch} />)}
-
-                <Paper
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap',
-                        listStyle: 'none',
-                        p: 0.5,
-                        m: 0,
+                    variant="outlined" sx={{
+                        my: 4,
+                        '& label': { color: '#A0A0A0' }, // Label color (soft gray)
+                        '& input': { color: '#E0E0E0' }, // Input text color (light gray)
+                        '& fieldset': { borderColor: '#444' }, // Default border color (dark gray)
+                        '&:hover fieldset': { borderColor: '#888' }, // Hover border color (medium gray)
+                        '&.Mui-focused fieldset': { borderColor: '#00BFA6' }, // Focused border color (teal)
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: '#2a3942', // Background color for input field (dark gray)
+                        }
                     }}
-                    component="ul"
-                >
-                    {info.users.map((data) => {
 
-                        return (
-                            <ListItem key={data._id}>
-                                <Chip
-                                    label={data.name}
-                                    onDelete={handleDelete(data)}
-                                />
-                            </ListItem>
-                        );
-                    })}
-                </Paper>
+                />
+                <div className="w-full h-[100px] relative"> {/* Add relative positioning to parent container */}
+                    <SearchBar query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
+
+                    {/* The SearchResults box will appear above without affecting the button */}
+                    {loadingSearch ? (
+                        <div className="loader"></div>
+                    ) : 
+                        (query!="" &&
+                        <div className="z-10 absolute top-[65px] w-full h-[140px] overflow-auto bg-chat ">
+                            <SearchResults
+                                query={query}
+                                results={results}
+                                handleSession={handleSession}
+                                loadingSearch={loadingSearch}
+                            />
+                        </div>)
+                    }
+                </div>
 
 
-                <Button type="submit" sx={{margin:5}} variant="contained">Create Group</Button>
+                <div className="flex">
+                    <Paper
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexWrap: 'wrap',
+                            listStyle: 'none',
+                            overflow: 'hidden',
+                            backgroundColor: 'inherit',
+                            mt: 0,
+
+                        }}
+
+                        component="ul"
+                    >
+                        {info.users.map((data) => {
+
+                            return (
+                                <ListItem key={data._id} className="bg-gray-500 rounded-2xl" >
+                                    <Chip
+                                        label={data.name}
+                                        onDelete={handleDelete(data)}
+                                    />
+                                </ListItem>
+                            );
+                        })}
+                    </Paper>
+                </div>
+
+
+
+                <Button type="submit" sx={{ margin: 5 }} variant="contained">Create Group</Button>
 
 
             </form>
@@ -162,6 +191,6 @@ export default function GroupComp({handleClose,socket}) {
 }
 
 GroupComp.propTypes = {
-  socket: PropTypes.object.isRequired, 
-  handleClose:PropTypes.func.isRequired,
+    socket: PropTypes.object.isRequired,
+    handleClose: PropTypes.func.isRequired,
 };

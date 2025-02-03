@@ -4,11 +4,14 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
+import PropTypes from "prop-types";
 
 
-import GroupComp from '../common/groupComp';
+
+
 import { useSelector } from "react-redux"
 import { MdOutlineGroups } from "react-icons/md";
+import GroupCard from '../card/groupCard';
 
 
 const style = {
@@ -18,14 +21,14 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 700,
     height: 500,
-    bgcolor: 'background.paper',
+    bgcolor:  '#111b21',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
     borderRadius: 5,
 };
 
-export default function GroupChatModel() {
+export default function GroupChatModel({handleSession}) {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -60,10 +63,15 @@ export default function GroupChatModel() {
             >
                 <Fade in={open}>
                     <Box sx={style}>
-                        
+                       <GroupCard handleSession={handleSession}/>
                     </Box>
                 </Fade>
             </Modal>
         </div>
     );
 }
+
+GroupChatModel.propTypes = {
+  
+  handleSession:PropTypes.func.isRequired
+};
