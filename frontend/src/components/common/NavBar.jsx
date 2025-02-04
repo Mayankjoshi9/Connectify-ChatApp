@@ -1,5 +1,5 @@
 
-import GroupModel from "../models/groupModel"
+import GroupModel from "../models/GroupModel"
 import NavDashboard from "../dashboards/NavDashboard"
 import PropTypes from "prop-types";
 import icon from "../../../public/assets/icon.png"
