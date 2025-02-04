@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../services/messageAPI";
 import { addMessage } from "../../slices/message";
 import { IoMdSend } from "react-icons/io";
-import bgImg from "../../../dist/assets/chatBg-BpnzKRHi.jpg"
-
+import bgImg from "../../assets/chatBg.jpg";
 import GroupChatModel from "../models/GroupChatModel.jsx";
 import PropTypes from "prop-types";
 import ProfileModel from "../models/ProfileModel";

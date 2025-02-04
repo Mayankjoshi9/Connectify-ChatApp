@@ -4,8 +4,7 @@ import { sendOtp } from "../services/authAPI";
 import { Link, useNavigate } from "react-router-dom";
 import { setSignupData } from "../slices/auth";
 import image from "../assets/icon.png"
-import ChatBg from "../../dist/assets/chatBg-BpnzKRHi.jpg"
-
+import ChatBg from "../assets/ChatBg.jpg"
 
 
 
