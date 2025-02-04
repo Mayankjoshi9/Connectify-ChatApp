@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../services/authAPI";
 import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/icon.png"
-import ChatBg from "../assets/chatBg.jpg"
+import ChatBg from "../../dist/assets/chatBg-BpnzKRHi.jpg"
 
 const Login = () => {
   const dispatch = useDispatch();

@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../services/messageAPI";
 import { addMessage } from "../../slices/message";
 import { IoMdSend } from "react-icons/io";
-import bgImg from "../../assets/chatBg.jpg";
+import bgImg from "../../../dist/assets/chatBg-BpnzKRHi.jpg"
+
 import GroupChatModel from "../models/GroupChatModel.jsx";
 import PropTypes from "prop-types";
 import ProfileModel from "../models/ProfileModel";
@@ -145,7 +146,7 @@ const ChatSession = ({ socket, handleSession }) => {
       </div>
 
       <form
-        className="w-full h-[70px] p-3 bg-search absolute bottom-0 flex items-center z-0"
+        className="w-full px-3 py-3  bg-search flex items-center z-0"
         onSubmit={sendMessageHandler}
       >
         <input
