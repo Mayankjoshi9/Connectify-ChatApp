@@ -2,7 +2,7 @@
 import GroupModel from "../models/groupModel"
 import NavDashboard from "../dashboards/NavDashboard"
 import PropTypes from "prop-types";
-import icon from "../../assets/icon.png"
+import icon from "../../../public/assets/icon.png"
 
 
 

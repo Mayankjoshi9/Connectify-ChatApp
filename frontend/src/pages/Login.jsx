@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../services/authAPI";
 import { Link, useNavigate } from "react-router-dom";
-import image from "../assets/icon.png"
-import ChatBg from "../assets/chatBg.jpg"
+
+
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-primary px-4"
       style={{
-        backgroundImage: `url(${ChatBg})`,
+        backgroundImage: `url("/assets/chatBg.jpg")`,
         backgroundSize: "cover",
         
         height:"100vh",
@@ -45,7 +45,7 @@ const Login = () => {
         <div className="bg-chat shadow-lg rounded-lg p-6 sm:p-8 w-full max-w-md">
 
           <h2 className="flex text-xl sm:text-2xl font-semibold text-center text-white mb-4 sm:mb-6">
-            Chat Now ! <img src={image} className="w-12 h-12 ml-1" />
+            Chat Now ! <img src="assets/icon.png" className="w-12 h-12 ml-1" />
           </h2>
           <form onSubmit={submitHandler} className="flex flex-col gap-3 sm:gap-4">
             <div className="flex flex-col">

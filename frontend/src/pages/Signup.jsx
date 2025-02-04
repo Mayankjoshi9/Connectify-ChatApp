@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { sendOtp } from "../services/authAPI";
 import { Link, useNavigate } from "react-router-dom";
 import { setSignupData } from "../slices/auth";
-import image from "../assets/icon.png"
-import ChatBg from "../assets/ChatBg.jpg"
+
+
 
 
 
@@ -29,7 +29,7 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-primary"
      style={{
-            backgroundImage: `url(${ChatBg})`,
+            backgroundImage: `url("/assets/chatBg.jpg")`,
             backgroundSize: "cover",
             
             height:"100vh",
@@ -41,7 +41,7 @@ const Signup = () => {
           Connect With Friends
         </h2>
         <h2 className="flex justify-center text-2xl sm:text-3xl font-semibold text-center text-white mb-6">
-          Register Now <img src={image} className="w-12 h-12 ml-1"/>
+          Register Now <img src="assets/icon.png" className="w-12 h-12 ml-1"/>
         </h2>
 
         {loading ? (

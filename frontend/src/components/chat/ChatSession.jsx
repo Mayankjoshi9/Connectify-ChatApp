@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages } from "../../services/messageAPI";
 import { addMessage } from "../../slices/message";
 import { IoMdSend } from "react-icons/io";
-import bgImg from "../../assets/chatBg.jpg";
 import GroupChatModel from "../models/GroupChatModel.jsx";
 import PropTypes from "prop-types";
 import ProfileModel from "../models/ProfileModel";
@@ -129,7 +128,7 @@ const ChatSession = ({ socket, handleSession }) => {
       <div
         ref={messageContainerRef}
         className="h-full flex-col overflow-y-auto p-5 border-none z-0"
-        style={{ backgroundImage: `url(${bgImg})` }}
+        style={{ backgroundImage: `url("assets/chatBg.jpg")` }}
       >
         {chatLoader ? (
           <div className="w-full h-full flex justify-center items-center pt-[200px]">
