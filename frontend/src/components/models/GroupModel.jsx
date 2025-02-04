@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
-
 import { FaUserGroup } from "react-icons/fa6";
 import GroupComp from '../common/GroupComp';
 import PropTypes from "prop-types";

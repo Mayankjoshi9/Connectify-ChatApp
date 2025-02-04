@@ -5,13 +5,9 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import PropTypes from "prop-types";
-
-
-
-
 import { useSelector } from "react-redux"
 import { MdOutlineGroups } from "react-icons/md";
-import GroupCard from '../card/groupCard';
+import GroupCard from '../card/GroupCard';
 
 
 const style = {
