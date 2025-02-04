@@ -14,10 +14,12 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
+  width:'50%' ,
+  minWidth:300,
+  bgcolor: '#111b21',
   border: '2px solid #000',
   boxShadow: 24,
+  p:2,
   borderRadius:"16px"
 };
 
@@ -31,16 +33,16 @@ const ProfileModel=({user}) =>{
 
 
   return (
-    <div className="w-full h-full">
-      {(user?._id==curruser?._id)? (<div className="flex w-[400px] h-full gap-5 pt-1 pl-20 mr-10 cursor-pointer" onClick={handleOpen}>
+    <div className="w-full h-full flex item-center">
+      {(user?._id==curruser?._id)? (<div className="flex w-[400px] h-full md:gap-5 gap-5  pt-1 md:pl-20 pl-1 cursor-pointer" onClick={handleOpen}>
         <img
-            className="w-[35px] h-[35px] rounded-full"
+            className="w-[15%] max-w-[35px] min-w-[25px] min-h-[25px] max-h-[35px] h-[15%] rounded-full"
             src={user?.additionalDetails?.image}
           />
-          <div className="text-gray-500 text-xl font-semibold">Your Profile</div>
+          <div className="text-gray-500 text-xl  font-semibold">{user.name} <span>(you)</span></div>
       </div>):(
         <div
-          className="flex w-[400px] h-full gap-5 pt-1 pl-20 mr-10 cursor-pointer"
+          className="flex w-[400px] h-full gap-5 pt-1 md:pl-20 pl-1 mr-10 cursor-pointer"
           onClick={handleOpen}
         >
           <img
@@ -65,7 +67,7 @@ const ProfileModel=({user}) =>{
       >
         <Fade in={open}>
           <Box sx={style}>
-              <ProfileComp user={user}/>
+              <ProfileComp user={user} handleClose={handleClose}/>
           </Box>
         </Fade>
       </Modal>

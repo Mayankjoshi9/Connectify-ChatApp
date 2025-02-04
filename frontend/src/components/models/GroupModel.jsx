@@ -14,12 +14,13 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 700,
-  height:500,
+  width:'50%' ,
+  minWidth:300,
+  height:'70%',
   bgcolor: '#111b21',
   border: '2px solid #000',
   boxShadow: 24,
-  p: 4,
+  p: 2,
   borderRadius:5,
 };
 

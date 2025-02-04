@@ -50,8 +50,9 @@ export default function NavDashboard({socket}) {
                     horizontal: 'left',
                 }}
                 sx={{
-                    width:350,
-                    height:300,
+                    width:'50%',
+                    minWidth:100,
+                    height:'50%',
                     
                 }}
             >

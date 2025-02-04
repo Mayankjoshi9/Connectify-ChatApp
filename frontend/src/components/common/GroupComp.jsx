@@ -112,8 +112,8 @@ export default function GroupComp({ handleClose, socket }) {
 
     return (
         <>
-            <form onSubmit={submitHandler} className="flex flex-col w-full h-full p-10  text-white ">
-                <h1 className="flex justify-center text-4xl ">Create Group Chat</h1>
+            <form onSubmit={submitHandler} className="flex flex-col w-full h-full md:px-[5rem] md:py-[1rem]  text-white ">
+                <h1 className="flex justify-center lg:text-4xl text-3xl">Create Group Chat</h1>
                 <TextField id="outlined-basic" label="Chat Name" value={info.chatName} onChange={(e) => setInfo((prevInfo) => ({ ...prevInfo, chatName: e.target.value, }))}
                     variant="outlined" sx={{
                         my: 4,
