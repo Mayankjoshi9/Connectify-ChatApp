@@ -25,6 +25,7 @@ const ChatSession = ({ socket, handleSession }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setChatLoader(true);
       try {
         await dispatch(fetchMessages(session._id, token));
       } catch (error) {
@@ -135,7 +136,7 @@ const ChatSession = ({ socket, handleSession }) => {
         style={{ backgroundImage: `url("assets/chatBg.jpg")` }}
       >
         {chatLoader ? (
-          <div className="w-full h-full flex justify-center items-center pt-[200px]">
+          <div className="w-full h-full flex justify-center items-center ">
             <div className="lds-spinner">
               {[...Array(12)].map((_, i) => (
                 <div key={i}></div>
