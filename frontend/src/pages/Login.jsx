@@ -25,7 +25,10 @@ const Login = () => {
     e.preventDefault();
     dispatch(login(email, password, navigate));
   };
-
+  const handleGuest=()=>{
+  
+    dispatch(login("mebac12329@dfesc.com", "mebac12329@dfesc.com", navigate));
+  }
   const loading = useSelector((state) => state.auth.loading);
 
   return (
@@ -86,7 +89,15 @@ const Login = () => {
             >
               Login
             </button>
+
+            
           </form>
+          <button
+              onClick={handleGuest}
+              className="mt-3 sm:mt-4 p-3 w-full bg-gray-200 hover:bg-gray-300 text-black rounded-md  transition duration-200"
+            >
+              Use Guest Credentials
+            </button>
 
           <div className="flex flex-col sm:flex-row sm:justify-between items-center mt-4">
             <Link to="/resetpassword" className="text-blue-400 hover:underline">
