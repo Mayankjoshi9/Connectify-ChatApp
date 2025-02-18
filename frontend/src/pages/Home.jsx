@@ -12,6 +12,7 @@ import SearchResults from '../components/common/SearchResults'
 import SearchBar from "../components/common/SearchBar";
 import { MdOutlineGroups } from "react-icons/md";
 import io from "socket.io-client";
+import { Serverurl } from '../config';
 
 
 
@@ -32,7 +33,7 @@ const Home = () => {
 
   const socket = useMemo(
       () =>
-        io("http://localhost:4000", {
+        io(Serverurl, {
           transports: ["websocket"],
           withCredentials: true,
         }),

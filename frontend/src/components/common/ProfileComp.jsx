@@ -8,7 +8,7 @@ const ProfileComp = ({user,handleClose}) => {
 
     <div className="relative w-full h-full md:px-[10%] px-1 rounded-[13px] bg-primary text-white  transition-transform duration-[1000]">
       <div className="flex flex-col items-center mb-6">
-        <button onClick={()=>handleClose()} className="absolute left-0 top-1 text-white"><IoMdArrowRoundBack className="w-[25px] h-[25px]"/></button>
+        <button onClick={()=>handleClose()} className="absolute left-0 top-1 text-white md:hidden"><IoMdArrowRoundBack className="w-[25px] h-[25px]"/></button>
         <img
           src={user?.additionalDetails?.image}
           className="w-32 h-32 rounded-full border-4 border-white mb-4 shadow-lg"
