@@ -70,17 +70,13 @@ const Home = () => {
   }, [dispatch, token])
 
   const handleChat = async (currSession, participant) => {
-   
     dispatch(setSession(currSession));
     localStorage.setItem("session", JSON.stringify(currSession));
     
     if(!Array.isArray(participant)){
       dispatch(setSessionUser(participant));
       localStorage.setItem("sessionUser", JSON.stringify(participant));
-
     }   
-    
-
   }
   
   useEffect(()=>{
@@ -111,7 +107,7 @@ const Home = () => {
         <div className="loader"></div>
       ) : (
 
-        <div className="w-screen h-screen flex ">
+        <div className="w-screen h-full flex ">
 
           <div className={`md:w-[50%] ${session?"w-0":"w-full"}  h-full  text-black flex flex-col justify-start items-center`}>
             <SearchBar query={query} handleInputChange={handleInputChange} loadingSearch={loadingSearch} error={error} />
