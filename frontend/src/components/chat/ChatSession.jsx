@@ -40,6 +40,8 @@ const ChatSession = ({ socket, handleSession }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (!hasMoreMessages) return;
+     
+
 
       setFetchChatMessages(true);
       try {
@@ -58,7 +60,7 @@ const ChatSession = ({ socket, handleSession }) => {
     if (messageContainerRef.current && !chatLoader && messages.length > 0) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
-  }, [messages, chatLoader]);
+  }, [ chatLoader]);
 
   useEffect(() => {
     socket.emit("join", session._id);
